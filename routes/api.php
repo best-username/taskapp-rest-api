@@ -19,5 +19,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
   Route::get('/users', 'UserController@index');
   
   Route::apiResource('boards', 'BoardController');
+  Route::apiResource('tasks', 'TaskController');
+  
+  Route::post('/tasks/attach', 'TaskController@attachToBoard');
   
 });

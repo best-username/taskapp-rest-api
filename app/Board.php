@@ -27,4 +27,8 @@ class Board extends Model
     * Relations
     */
     
+    public function tasks()
+    {
+        return $this->belongsToMany(Task::class);
+    }
 }
