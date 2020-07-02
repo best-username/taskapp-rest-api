@@ -23,8 +23,7 @@ class TaskCreateRequest extends BaseRequest
     {
         return [
             'name' => 'required',
-            'image_desktop' => 'required',
-            'image_mobile' => 'required',
+            'image' => 'mimes:jpeg,jpg,png|required',
             'status' => ['required', new \App\Rules\TaskStatusRule()],
         ];
     }

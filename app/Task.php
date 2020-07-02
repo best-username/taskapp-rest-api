@@ -9,10 +9,8 @@ class Task extends Model
 {
     use SoftDeletes;
     
-    const STATUS_BACKLOG = 1;
-    const STATUS_DEVELOPMENT = 2;
-    const STATUS_DONE = 3;
-    const STATUS_REVIEW = 4;
+    const MOBILE_IMAGE_SIZE = 300;
+    const DESKTOP_IMAGE_SIZE = 1000;
     
     const STATUS_ARRAY = ['backlog' => 1, 'development' => 2, 'done' => 3, 'review' => 4];
     

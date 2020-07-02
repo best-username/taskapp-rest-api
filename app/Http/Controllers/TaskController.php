@@ -7,9 +7,14 @@ use Illuminate\Http\Request;
 use App\Http\Requests\TaskCreateRequest;
 use App\Http\Requests\TaskUpdateRequest;
 use App\Http\Requests\TaskAttachToBoardRequest;
+use App\Http\Traits\PhotoTrait;
+use Illuminate\Support\Facades\File;
+use App\Jobs\ProcessImage;
 
 class TaskController extends Controller
 {
+    use PhotoTrait;
+    
     /** @api {get} {{host}}/api/tasks
      * Display a listing of the resource.
      */
@@ -24,6 +29,12 @@ class TaskController extends Controller
     public function store(TaskCreateRequest $request)
     {
         $task = new Task($request->all());
+        $image = $this->savePhoto($request->image);
+        $task->save();
+        $imageFile = base64_encode(File::get($image));
+        ProcessImage::dispatch($imageFile, Task::DESKTOP_IMAGE_SIZE, $task->id);
+        ProcessImage::dispatch($imageFile, Task::MOBILE_IMAGE_SIZE, $task->id);
+        
         return response()->json(['success' => $task->save(), 'data' => $task]);
     }
 
