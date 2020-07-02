@@ -17,4 +17,7 @@ Route::post('/login', 'Auth\AuthController@login');
 
 Route::middleware(['auth:sanctum'])->group(function () {
   Route::get('/users', 'UserController@index');
+  
+  Route::apiResource('boards', 'BoardController');
+  
 });
