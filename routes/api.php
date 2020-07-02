@@ -20,6 +20,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
   
   Route::apiResource('boards', 'BoardController');
   Route::apiResource('tasks', 'TaskController');
+  Route::apiResource('labels', 'LabelController');
   
   Route::post('/tasks/attach', 'TaskController@attachToBoard');
   

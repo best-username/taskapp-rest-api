@@ -37,6 +37,11 @@ class Task extends Model
         return $this->belongsToMany(Board::class);
     }
     
+    public function labels()
+    {
+        return $this->belongsToMany(Label::class);
+    }
+    
     /**
      * Mutators
      */
