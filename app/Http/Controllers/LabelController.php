@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Label;
 use Illuminate\Http\Request;
+use App\Http\Requests\LabelAttachToTaskRequest;
 
 class LabelController extends Controller
 {
@@ -46,6 +47,17 @@ class LabelController extends Controller
     public function destroy(Label $label)
     {
         return response()->json(['success' => $label->delete()]);
+    }
+    
+    /** @api {label/attach} {{host}}/api/label/attach
+     * Attach the specified resource to the Board object.
+     */
+    public function attachToTask(LabelAttachToTaskRequest $request)
+    {
+        $label = Label::find($request->label_id);
+        $label->tasks()->attach($request->task_id);
+
+        return response()->json(['success' => true, 'data' => $label->tasks]);
     }
     
 }

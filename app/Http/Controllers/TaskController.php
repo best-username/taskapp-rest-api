@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Task;
+use App\Label;
 use Illuminate\Http\Request;
 use App\Http\Requests\TaskCreateRequest;
 use App\Http\Requests\TaskUpdateRequest;
@@ -74,5 +75,25 @@ class TaskController extends Controller
         $task->boards()->attach($request->board_id);
 
         return response()->json(['success' => true, 'data' => $task]);
+    }
+    
+    /** @api {tasks/label/{label}} {{host}}/api/tasks/label/{$label_id}
+     * Attach the specified resource to the Board object.
+     */
+    public function getByLabel($label_id)
+    {
+        $label = Label::find($label_id);
+        $tasks = $label->tasks;
+        
+        return response()->json(['success' => true, 'data' => $tasks]);
+    }
+    
+    /** @api {tasks/label/{label}} {{host}}/api/tasks/status/{status}
+     * Attach the specified resource to the Board object.
+     */
+    public function getByStatus($status)
+    {
+        $tasks = Task::where('status', $status)->get();
+        return response()->json(['success' => true, 'data' => $tasks]);
     }
 }

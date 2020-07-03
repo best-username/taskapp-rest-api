@@ -24,4 +24,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
   
   Route::post('/tasks/attach', 'TaskController@attachToBoard');
   
+  Route::post('/label/attach', 'LabelController@attachToTask');
+  
+  Route::get('/tasks/label/{label_id}', 'TaskController@getByLabel');
+  Route::get('/tasks/status/{status}', 'TaskController@getByStatus');
+  
 });
