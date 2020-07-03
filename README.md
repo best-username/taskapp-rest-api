@@ -1,3 +1,18 @@
+REST API task application (like Trello).
+You need to create user authorization.
+The user can create and update boards.
+The user can attach a task to each board.
+The user can create custom labels, then he can attach multiple labels to the task.
+The task must have a status (backlog, development, done, review).
+We can filter tasks by labels, status.
+The user can attach an image to the task (the image must be cropped into 2 formats: desktop, mobile). Image cropping must be asynchronous. (http://image.intervention.io/).
+We need to keep logs in MongoDB table “logs” for each update of task (create, update, delete). Who made the change, when, and what was changed (use https://github.com/jenssegers/laravel-mongodb).
+
+Use: Laravel 7.0, MySQL, MongoDB.
+
+
+
+
 <p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
 
 <p align="center">
