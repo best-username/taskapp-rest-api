@@ -18,6 +18,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        'App\Events\TaskUpdated' => [
+            'App\Listeners\WriteToTaskLog',
+        ],
     ];
 
     /**
@@ -31,4 +34,27 @@ class EventServiceProvider extends ServiceProvider
 
         //
     }
+    /**
+     * Determine if events and listeners should be automatically discovered.
+     *
+     * @return bool
+     */
+    public function shouldDiscoverEvents()
+    {
+        return true;
+    }
+    
+    /**
+     * Get the listener directories that should be used to discover events.
+     *
+     * @return array
+     */
+    protected function discoverEventsWithin()
+    {
+        return [
+            $this->app->path('Listeners'),
+        ];
+    }
+    
+    
 }
