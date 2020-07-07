@@ -16,7 +16,9 @@ class CreateBoardTaskTable extends Migration
         Schema::create('board_task', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('board_id')->unsigned();
+            $table->foreign('board_id')->references('id')->on('boards')->onDelete('cascade');
             $table->integer('task_id')->unsigned();
+            $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
             $table->timestamps();
         });
     }
