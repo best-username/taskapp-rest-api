@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Board;
+use App\Task;
 use App\Policies\BoardPolicy;
+use App\Policies\TaskPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -15,7 +17,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-         Board::class => BoardPolicy::class,
+        Board::class => BoardPolicy::class,
+        Task::class => TaskPolicy::class,
     ];
 
     /**

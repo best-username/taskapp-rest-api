@@ -42,6 +42,11 @@ class Task extends Model
         return $this->belongsToMany(Label::class);
     }
     
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'creator_id');
+    }
+    
     /**
      * Mutators
      */

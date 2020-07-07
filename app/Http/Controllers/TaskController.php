@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\Task;
 use App\Label;
+use App\Board;
 use Illuminate\Http\Request;
 use App\Http\Requests\TaskCreateRequest;
 use App\Http\Requests\TaskUpdateRequest;
@@ -20,9 +22,9 @@ class TaskController extends Controller
     /** @api {get} {{host}}/api/tasks
      * Display a listing of the resource.
      */
-    public function index(Task $task)
+    public function index()
     {
-        return response()->json(['success' => true, 'data' => $task->all()->load('boards')]);
+        return response()->json(['success' => true, 'data' => Task::with(['boards', 'labels'])->get()]);
     }
 
     /** @api {post} {{host}}/api/task
@@ -30,7 +32,8 @@ class TaskController extends Controller
      */
     public function store(TaskCreateRequest $request)
     {
-        $task = new Task($request->all());
+        $task = new Task($request->validated());
+        $task->creator()->associate(Auth::user()->id);
         $image = $this->savePhoto($request->image);
         $task->save();
         $imageFile = base64_encode(File::get($image));
@@ -53,8 +56,9 @@ class TaskController extends Controller
      */
     public function update(TaskUpdateRequest $request, Task $task)
     {
+        $this->authorize('update', $task);
         TaskUpdated::dispatch($task, 'update');
-        return response()->json(['success' => $task->update($request->all()), 'data' => $task]);
+        return response()->json(['success' => $task->update($request->validated()), 'data' => $task]);
     }
 
     /** @api {destroy} {{host}}/api/task/58
@@ -62,6 +66,7 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
+        $this->authorize('delete', $task);
         TaskUpdated::dispatch($task, 'delete');
         return response()->json(['success' => $task->delete()]);
     }
@@ -71,21 +76,20 @@ class TaskController extends Controller
      */
     public function attachToBoard(TaskAttachToBoardRequest $request)
     {
-        $task = Task::find($request->task_id);
-        $task->boards()->attach($request->board_id);
+        $task = Task::findOrFail($request->task_id);
+        $board = Board::findOrFail($request->board_id);
+        $this->authorize('attachToBoard', [$task, $board]);
+        $task->boards()->attach($board);
 
-        return response()->json(['success' => true, 'data' => $task]);
+        return response()->json(['success' => true, 'data' => $task->load('boards')]);
     }
     
     /** @api {tasks/label/{label}} {{host}}/api/tasks/label/{$label_id}
      * Attach the specified resource to the Board object.
      */
-    public function getByLabel($label_id)
+    public function getByLabel(Label $label)
     {
-        $label = Label::find($label_id);
-        $tasks = $label->tasks;
-        
-        return response()->json(['success' => true, 'data' => $tasks]);
+        return response()->json(['success' => true, 'data' => $label->tasks]);
     }
     
     /** @api {tasks/label/{label}} {{host}}/api/tasks/status/{status}
