@@ -31,4 +31,9 @@ class Board extends Model
     {
         return $this->belongsToMany(Task::class);
     }
+    
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'creator_id');
+    }
 }

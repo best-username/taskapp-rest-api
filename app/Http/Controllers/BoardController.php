@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\Board;
 use Illuminate\Http\Request;
 use App\Http\Requests\BoardCreateRequest;
@@ -13,8 +14,8 @@ class BoardController extends Controller
      */
     public function index()
     {
-        $boards = Board::all();
-        if($boards) {
+        $boards = Board::with('tasks')->get();
+        if($boards->isNotEmpty()) {
             return response()->json(['success' => true, 'data' => $boards]);
         } else {
             return 404;
@@ -26,7 +27,8 @@ class BoardController extends Controller
      */
     public function store(BoardCreateRequest $request)
     {
-        $board = new Board($request->all());
+        $board = new Board($request->validated());
+        $board->creator()->associate(Auth::user()->id);
         if($board->save()) {
             return response()->json(['success' => true, 'data' => $board]);
         } else {
@@ -37,22 +39,17 @@ class BoardController extends Controller
     /** @api {get} {{host}}/api/board/1
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(Board $board)
     {
-        $board = Board::findOrFail($id);
-        if($board) {
-            return response()->json(['success' => true, 'data' => $board]);
-        } else {
-            return 404;
-        }
+        return response()->json(['success' => true, 'data' => $board]);
     }
 
     /** @api {put} {{host}}/api/board/58
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Board $board)
     {
-        $board = Board::findOrFail($id);
+        $this->authorize('update', $board);
         $board->update($request->all());
         return response()->json(['success' => true, 'data' => $board]);
     }
@@ -60,11 +57,10 @@ class BoardController extends Controller
     /** @api {destroy} {{host}}/api/board/58
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(Board $board)
     {
-        $board = Board::findOrFail($id);
+        $this->authorize('delete', $board);
         $board->delete();
-
         return response()->json(['success' => true]);
     }
 }
