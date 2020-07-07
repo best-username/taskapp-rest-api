@@ -6,6 +6,7 @@ use Auth;
 use App\Board;
 use Illuminate\Http\Request;
 use App\Http\Requests\BoardCreateRequest;
+use App\Http\Requests\BoardUpdateRequest;
 
 class BoardController extends Controller
 {
@@ -47,10 +48,10 @@ class BoardController extends Controller
     /** @api {put} {{host}}/api/board/58
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Board $board)
+    public function update(BoardUpdateRequest $request, Board $board)
     {
         $this->authorize('update', $board);
-        $board->update($request->all());
+        $board->update($request->validated());
         return response()->json(['success' => true, 'data' => $board]);
     }
 
