@@ -19,6 +19,8 @@ class CreateTasksTable extends Migration
             $table->string('image_desktop')->nullable();
             $table->string('image_mobile')->nullable();
             $table->integer('status');
+            $table->integer('creator_id')->nullable()->unsigned();
+            $table->foreign('creator_id')->references('id')->on('users')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -31,6 +33,10 @@ class CreateTasksTable extends Migration
      */
     public function down()
     {
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->dropForeign(['creator_id']);
+            $table->dropColumn('creator_id');
+        });
         Schema::dropIfExists('tasks');
     }
 }

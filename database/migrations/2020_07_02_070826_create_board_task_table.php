@@ -15,9 +15,9 @@ class CreateBoardTaskTable extends Migration
     {
         Schema::create('board_task', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('board_id')->unsigned();
+            $table->integer('board_id')->nullable()->unsigned();
             $table->foreign('board_id')->references('id')->on('boards')->onDelete('cascade');
-            $table->integer('task_id')->unsigned();
+            $table->integer('task_id')->nullable()->unsigned();
             $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
             $table->timestamps();
         });
@@ -30,6 +30,11 @@ class CreateBoardTaskTable extends Migration
      */
     public function down()
     {
+        Schema::table('board_task', function (Blueprint $table) {
+            $table->dropForeign(['board_id']);
+            $table->dropForeign(['task_id']);
+            $table->dropColumn(['board_id', 'task_id']);
+        });
         Schema::dropIfExists('board_task');
     }
 }

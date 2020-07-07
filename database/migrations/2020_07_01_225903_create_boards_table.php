@@ -16,6 +16,8 @@ class CreateBoardsTable extends Migration
         Schema::create('boards', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->integer('creator_id')->nullable()->unsigned();
+            $table->foreign('creator_id')->references('id')->on('users')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -28,6 +30,10 @@ class CreateBoardsTable extends Migration
      */
     public function down()
     {
+        Schema::table('boards', function (Blueprint $table) {
+            $table->dropForeign(['creator_id']);
+            $table->dropColumn('creator_id');
+        });
         Schema::dropIfExists('boards');
     }
 }
