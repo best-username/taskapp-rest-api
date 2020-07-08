@@ -25,6 +25,7 @@ class TaskCreateRequest extends BaseRequest
             'name' => 'required',
             'image' => 'mimes:jpeg,jpg,png|required',
             'status' => ['required', new \App\Rules\TaskStatusRule()],
+            'board_id' => 'required|exists:boards,id'
         ];
     }
 }
