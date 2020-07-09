@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Label;
 use Illuminate\Http\Request;
 use App\Http\Requests\LabelAttachToTaskRequest;
+use App\Http\Resources\LabelResource;
+use App\Http\Resources\TaskResource;
 
 class LabelController extends Controller
 {
@@ -13,7 +15,7 @@ class LabelController extends Controller
      */
     public function index(Label $label)
     {
-        return response()->json(['success' => true, 'data' => $label->all()]);
+        return response()->json(['success' => true, 'data' => LabelResource::collection($label->all())]);
     }
 
     /** @api {post} {{host}}/api/label
@@ -22,7 +24,7 @@ class LabelController extends Controller
     public function store(Request $request)
     {
         $label = new Label($request->all());
-        return response()->json(['success' => $label->save(), 'data' => $label]);
+        return response()->json(['success' => $label->save(), 'data' => new LabelResource($label)]);
     }
 
     /** @api {get} {{host}}/api/label/1
@@ -30,7 +32,7 @@ class LabelController extends Controller
      */
     public function show(Label $label)
     {
-        return response()->json(['success' => true, 'data' => $label]);
+        return response()->json(['success' => true, 'data' => new LabelResource($label)]);
     }
 
     /** @api {put} {{host}}/api/label/58
@@ -38,7 +40,7 @@ class LabelController extends Controller
      */
     public function update(Request $request, Label $label)
     {
-        return response()->json(['success' => $label->update($request->all()), 'data' => $label]);
+        return response()->json(['success' => $label->update($request->all()), 'data' => new LabelResource($label)]);
     }
 
     /** @api {destroy} {{host}}/api/label/58
@@ -57,7 +59,7 @@ class LabelController extends Controller
         $label = Label::find($request->label_id);
         $label->tasks()->attach($request->task_id);
 
-        return response()->json(['success' => true, 'data' => $label->tasks]);
+        return response()->json(['success' => true, 'data' => TaskResource::collection($label->tasks)]);
     }
     
 }

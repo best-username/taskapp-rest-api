@@ -79,7 +79,7 @@ class TaskController extends Controller
      */
     public function getByLabel(Label $label)
     {
-        return response()->json(['success' => true, 'data' => $label->tasks]);
+        return response()->json(['success' => true, 'data' => TaskResource::collection($label->tasks)]);
     }
     
     /** @api {tasks/label/{label}} {{host}}/api/tasks/status/{status}
