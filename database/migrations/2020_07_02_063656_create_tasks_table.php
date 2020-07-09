@@ -18,7 +18,7 @@ class CreateTasksTable extends Migration
             $table->string('name');
             $table->string('image_desktop')->nullable();
             $table->string('image_mobile')->nullable();
-            $table->integer('status');
+            $table->enum('status', ['backlog', 'development', 'done', 'review']);
             $table->integer('creator_id')->nullable()->unsigned();
             $table->foreign('creator_id')->references('id')->on('users')->onDelete('cascade');
             $table->softDeletes();

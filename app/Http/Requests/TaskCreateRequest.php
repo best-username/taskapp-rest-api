@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Task;
+use Illuminate\Validation\Rule;
 class TaskCreateRequest extends BaseRequest
 {
     /**
@@ -24,7 +26,7 @@ class TaskCreateRequest extends BaseRequest
         return [
             'name' => 'required',
             'image' => 'mimes:jpeg,jpg,png|required',
-            'status' => ['required', new \App\Rules\TaskStatusRule()],
+            'status' => Rule::in(Task::STATUS_ARRAY),
             'board_id' => 'required|exists:boards,id'
         ];
     }

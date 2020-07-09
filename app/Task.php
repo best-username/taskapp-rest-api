@@ -12,7 +12,7 @@ class Task extends Model
     const MOBILE_IMAGE_SIZE = 300;
     const DESKTOP_IMAGE_SIZE = 1000;
     
-    const STATUS_ARRAY = ['backlog' => 1, 'development' => 2, 'done' => 3, 'review' => 4];
+    const STATUS_ARRAY = ['backlog', 'development', 'done', 'review'];
     
     /**
      * The attributes that are mass assignable.
@@ -45,26 +45,6 @@ class Task extends Model
     public function creator()
     {
         return $this->belongsTo(User::class, 'creator_id');
-    }
-    
-    /**
-     * Mutators
-     */
-    
-    public function setStatusAttribute($value)
-    {
-        if(array_key_exists($value, self::STATUS_ARRAY)) {
-            $this->attributes['status'] = self::STATUS_ARRAY[$value];
-        }
-    }
-    
-    /**
-     * Accessors
-     */
-    
-    public function getStatusAttribute($value)
-    {
-        return array_search($value, self::STATUS_ARRAY);
     }
     
 }
