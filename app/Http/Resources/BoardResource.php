@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class BoardResource extends JsonResource
@@ -17,6 +18,7 @@ class BoardResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'creator' => new UserResource(User::find($this->creator_id)),
         ];
     }
 }

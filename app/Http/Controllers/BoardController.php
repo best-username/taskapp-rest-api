@@ -7,6 +7,8 @@ use App\Board;
 use Illuminate\Http\Request;
 use App\Http\Requests\BoardCreateRequest;
 use App\Http\Requests\BoardUpdateRequest;
+use App\Http\Resources\BoardResource;
+use App\Services\BoardService;
 
 class BoardController extends Controller
 {
@@ -17,7 +19,7 @@ class BoardController extends Controller
     {
         $boards = Board::with('tasks')->get();
         if($boards->isNotEmpty()) {
-            return response()->json(['success' => true, 'data' => $boards]);
+            return response()->json(['success' => true, 'data' => BoardResource::collection($boards)]);
         } else {
             return 404;
         }
@@ -28,13 +30,8 @@ class BoardController extends Controller
      */
     public function store(BoardCreateRequest $request)
     {
-        $board = new Board($request->validated());
-        $board->creator()->associate(Auth::user()->id);
-        if($board->save()) {
-            return response()->json(['success' => true, 'data' => $board]);
-        } else {
-            return response()->json(['success' => false, 'data' => $board]);
-        }
+        $board = (new BoardService())->storeBoard($request);
+        return response()->json(['success' => true, 'data' => new BoardResource($board)]);
     }
 
     /** @api {get} {{host}}/api/board/1
@@ -42,7 +39,7 @@ class BoardController extends Controller
      */
     public function show(Board $board)
     {
-        return response()->json(['success' => true, 'data' => $board]);
+        return response()->json(['success' => true, 'data' => new BoardResource($board)]);
     }
 
     /** @api {put} {{host}}/api/board/58
@@ -52,7 +49,7 @@ class BoardController extends Controller
     {
         $this->authorize('update', $board);
         $board->update($request->validated());
-        return response()->json(['success' => true, 'data' => $board]);
+        return response()->json(['success' => true, 'data' => new BoardResource($board)]);
     }
 
     /** @api {destroy} {{host}}/api/board/58
