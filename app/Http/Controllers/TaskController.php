@@ -21,7 +21,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return response()->json(['success' => true, 'data' => TaskResource::collection(Task::with(['boards', 'labels'])->get())]);
+        return response()->json(['success' => true, 'data' => TaskResource::collection(Task::with(['boards', 'labels'])->get())->paginate(10)]);
     }
 
     /** @api {post} {{host}}/api/task

@@ -19,7 +19,7 @@ class BoardController extends Controller
     {
         $boards = Board::with('tasks')->get();
         if($boards->isNotEmpty()) {
-            return response()->json(['success' => true, 'data' => BoardResource::collection($boards)]);
+            return response()->json(['success' => true, 'data' => BoardResource::collection($boards)->paginate(10)]);
         } else {
             return 404;
         }

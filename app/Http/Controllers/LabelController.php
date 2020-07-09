@@ -15,7 +15,7 @@ class LabelController extends Controller
      */
     public function index(Label $label)
     {
-        return response()->json(['success' => true, 'data' => LabelResource::collection($label->all())]);
+        return response()->json(['success' => true, 'data' => LabelResource::collection($label->all())->paginate(10)]);
     }
 
     /** @api {post} {{host}}/api/label
