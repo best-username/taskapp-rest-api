@@ -12,6 +12,7 @@ use App\Http\Requests\TaskUpdateRequest;
 use App\Http\Requests\TaskAttachToBoardRequest;
 use App\Events\TaskUpdated;
 use App\Services\TaskService;
+use App\Http\Resources\TaskResource;
 
 class TaskController extends Controller
 {
@@ -20,7 +21,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return response()->json(['success' => true, 'data' => Task::with(['boards', 'labels'])->get()]);
+        return response()->json(['success' => true, 'data' => TaskResource::collection(Task::with(['boards', 'labels'])->get())]);
     }
 
     /** @api {post} {{host}}/api/task
@@ -29,7 +30,7 @@ class TaskController extends Controller
     public function store(TaskCreateRequest $request)
     {
         $task = (new TaskService())->storeTask($request);
-        return response()->json(['success' => true, 'data' => $task]);
+        return response()->json(['success' => true, 'data' => new TaskResource($task)]);
     }
 
     /** @api {get} {{host}}/api/task/1
@@ -37,7 +38,7 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
-        return response()->json(['success' => true, 'data' => $task]);
+        return response()->json(['success' => true, 'data' => new TaskResource($task)]);
     }
 
     /** @api {put} {{host}}/api/task/58
@@ -47,7 +48,7 @@ class TaskController extends Controller
     {
         $this->authorize('update', $task);
         TaskUpdated::dispatch($task, 'update');
-        return response()->json(['success' => $task->update($request->validated()), 'data' => $task]);
+        return response()->json(['success' => $task->update($request->validated()), 'data' => new TaskResource($task)]);
     }
 
     /** @api {destroy} {{host}}/api/task/58
@@ -87,6 +88,6 @@ class TaskController extends Controller
     public function getByStatus($status)
     {
         $tasks = Task::where('status', $status)->get();
-        return response()->json(['success' => true, 'data' => $tasks]);
+        return response()->json(['success' => true, 'data' => TaskResource::collection($tasks)]);
     }
 }
